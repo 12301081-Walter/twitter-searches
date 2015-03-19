@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="fill_horizontal"
             android:gravity="center_horizontal"
-            android:text="@string/taggedSearches"
+            android:text="@string/taggedFavorites"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <ListView

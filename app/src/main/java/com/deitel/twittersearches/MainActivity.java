@@ -27,12 +27,12 @@ import android.widget.TextView;
 
 public class MainActivity extends ListActivity
 {
-   // name of SharedPreferences XML file that stores the saved searches 
-   private static final String SEARCHES = "searches";
+   // name of SharedPreferences XML file that stores the saved favorites
+   private static final String FAVORITES = "favorites";
    
    private EditText queryEditText; // EditText where user enters a query
    private EditText tagEditText; // EditText where user tags a query
-   private SharedPreferences savedSearches; // user's favorite searches
+   private SharedPreferences savedFavorites; // user's favorite searches
    private ArrayList<String> tags; // list of tags for saved searches
    private ArrayAdapter<String> adapter; // binds tags to ListView
    
@@ -48,10 +48,10 @@ public class MainActivity extends ListActivity
       tagEditText = (EditText) findViewById(R.id.tagEditText);
       
       // get the SharedPreferences containing the user's saved searches 
-      savedSearches = getSharedPreferences(SEARCHES, MODE_PRIVATE); 
+      savedFavorites = getSharedPreferences(FAVORITES, MODE_PRIVATE);
 
       // store the saved tags in an ArrayList then sort them
-      tags = new ArrayList<String>(savedSearches.getAll().keySet());
+      tags = new ArrayList<String>(savedFavorites.getAll().keySet());
       Collections.sort(tags, String.CASE_INSENSITIVE_ORDER); 
       
       // create ArrayAdapter and use it to bind tags to the ListView
@@ -112,7 +112,7 @@ public class MainActivity extends ListActivity
    private void addTaggedSearch(String query, String tag)
    {
       // get a SharedPreferences.Editor to store new tag/query pair
-      SharedPreferences.Editor preferencesEditor = savedSearches.edit();
+      SharedPreferences.Editor preferencesEditor = savedFavorites.edit();
       preferencesEditor.putString(tag, query); // store current search
       preferencesEditor.apply(); // store the updated preferences
       
@@ -134,8 +134,8 @@ public class MainActivity extends ListActivity
       {
          // get query string and create a URL representing the search
          String tag = ((TextView) view).getText().toString();
-         String urlString = getString(R.string.searchURL) +
-            Uri.encode(savedSearches.getString(tag, ""), "UTF-8");
+         String urlString = getString(R.string.enterURL) +
+            Uri.encode(savedFavorites.getString(tag, ""), "UTF-8");
          
          // create an Intent to launch a web browser    
          Intent webIntent = new Intent(Intent.ACTION_VIEW, 
@@ -183,7 +183,7 @@ public class MainActivity extends ListActivity
                            // set EditTexts to match chosen tag and query
                            tagEditText.setText(tag);
                            queryEditText.setText(
-                              savedSearches.getString(tag, ""));
+                                   savedFavorites.getString(tag, ""));
                            break;
                         case 2: // delete
                            deleteSearch(tag);
@@ -214,8 +214,8 @@ public class MainActivity extends ListActivity
    private void shareSearch(String tag)
    {
       // create the URL representing the search
-      String urlString = getString(R.string.searchURL) +
-         Uri.encode(savedSearches.getString(tag, ""), "UTF-8");
+      String urlString = getString(R.string.enterURL) +
+         Uri.encode(savedFavorites.getString(tag, ""), "UTF-8");
 
       // create Intent to share urlString
       Intent shareIntent = new Intent();
@@ -228,7 +228,7 @@ public class MainActivity extends ListActivity
       
       // display apps that can share text
       startActivity(Intent.createChooser(shareIntent, 
-         getString(R.string.shareSearch)));   
+         getString(R.string.shareFavorite)));
    }
 
    // deletes a search after the user confirms the delete operation
@@ -264,7 +264,7 @@ public class MainActivity extends ListActivity
                
                // get SharedPreferences.Editor to remove saved search
                SharedPreferences.Editor preferencesEditor = 
-                  savedSearches.edit();                   
+                  savedFavorites.edit();
                preferencesEditor.remove(tag); // remove search
                preferencesEditor.apply(); // saves the changes
 
